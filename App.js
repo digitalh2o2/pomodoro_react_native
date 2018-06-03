@@ -5,24 +5,27 @@ import MainTimer from "./components/MainTimer";
 
 export default class App extends React.Component {
   state = {
-    timeLeft: "10:00"
+    timeLeft: "10:00",
+    timerActive: false
   };
+
+  timerId = null;
 
   startTimer = () => {
     const { timeLeft } = this.state;
+    this.setState({ timerActive: true });
     let timer = parseInt(timeLeft);
     let countDown = new Date().getTime() + timer * 60000 + 1000;
-    let x = setInterval(() => {
+    this.timerId = setInterval(() => {
       let now = new Date().getTime();
       let timeComplete = countDown - now;
       let minutes = Math.floor((timeComplete % (1000 * 60 * 60)) / (1000 * 60));
       let seconds = Math.floor((timeComplete % (1000 * 60)) / 1000);
       console.log("minutes", minutes);
       console.log("seconds", seconds);
-      console.log(timeComplete);
       if (timeComplete < 1000) {
         this.clearTimer();
-        clearInterval(x);
+        clearInterval(this.timerId);
         Alert.alert("Time's Up!", "Time for a break!", [
           { text: "OK", onPress: () => console.log("OK Pressed") }
         ]);
@@ -35,9 +38,9 @@ export default class App extends React.Component {
     }, 1000);
   };
 
-  clearTimer = () => {
+  clearTimer() {
     this.setState({ timeLeft: "0:00" });
-  };
+  }
 
   increaseTimer = () => {
     const { timeLeft } = this.state;
@@ -51,6 +54,12 @@ export default class App extends React.Component {
     this.setState({ timeLeft: `${newTime}:00` });
   };
 
+  stopTimer = () => {
+    this.setState({ timeLeft: "0:00" });
+    clearInterval(this.timerId);
+    this.setState({ timerActive: false });
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -59,6 +68,8 @@ export default class App extends React.Component {
           startTimer={this.startTimer}
           increaseTimer={this.increaseTimer}
           decreaseTimer={this.decreaseTimer}
+          stopTimer={this.stopTimer}
+          timerActive={this.state.timerActive}
         />
       </View>
     );

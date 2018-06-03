@@ -14,13 +14,23 @@ class TimeLength extends Component {
             backgroundColor="#d3d3d3"
             onPress={this.props.decreaseTimer}
           />
-          <Button
-            raised
-            large
-            title="Start Timer"
-            backgroundColor="#E684AE"
-            onPress={this.props.startTimer}
-          />
+          {!this.props.timerActive ? (
+            <Button
+              raised
+              large
+              title="Start Timer"
+              backgroundColor="#E684AE"
+              onPress={this.props.startTimer}
+            />
+          ) : (
+            <Button
+              raised
+              large
+              title="Stop Timer"
+              backgroundColor="#E684AE"
+              onPress={this.props.stopTimer}
+            />
+          )}
           <Button
             raised
             large
