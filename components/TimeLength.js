@@ -7,9 +7,27 @@ class TimeLength extends Component {
     return (
       <View>
         <View style={styles.buttonContainer}>
-          <Button raised large title="-" backgroundColor="#fd1d1d" />
-          <Button raised large title="Start Timer" backgroundColor="#E684AE" />
-          <Button raised large title="+" backgroundColor="#45B649" />
+          <Button
+            raised
+            large
+            title="-"
+            backgroundColor="#647381"
+            onPress={this.props.decreaseTimer}
+          />
+          <Button
+            raised
+            large
+            title="Start Timer"
+            backgroundColor="#E684AE"
+            onPress={this.props.startTimer}
+          />
+          <Button
+            raised
+            large
+            title="+"
+            backgroundColor="#647381"
+            onPress={this.props.increaseTimer}
+          />
         </View>
       </View>
     );
