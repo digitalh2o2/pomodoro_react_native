@@ -11,7 +11,7 @@ class TimeLength extends Component {
             raised
             large
             title="-"
-            backgroundColor="#647381"
+            backgroundColor="#d3d3d3"
             onPress={this.props.decreaseTimer}
           />
           <Button
@@ -25,7 +25,7 @@ class TimeLength extends Component {
             raised
             large
             title="+"
-            backgroundColor="#647381"
+            backgroundColor="#d3d3d3"
             onPress={this.props.increaseTimer}
           />
         </View>

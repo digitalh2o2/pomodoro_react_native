@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import TimeLength from "./components/TimeLength";
 import MainTimer from "./components/MainTimer";
 
@@ -11,7 +11,6 @@ export default class App extends React.Component {
   startTimer = () => {
     const { timeLeft } = this.state;
     let timer = parseInt(timeLeft);
-    console.log("starting timer!");
     let countDown = new Date().getTime() + timer * 60000 + 1000;
     let x = setInterval(() => {
       let now = new Date().getTime();
@@ -21,21 +20,34 @@ export default class App extends React.Component {
       console.log("minutes", minutes);
       console.log("seconds", seconds);
       console.log(timeComplete);
-      this.setState({ timeLeft: `${minutes}:${seconds}` });
+      if (timeComplete < 1000) {
+        this.clearTimer();
+        clearInterval(x);
+        Alert.alert("Time's Up!", "Time for a break!", [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]);
+      }
+      if (seconds < 10) {
+        this.setState({ timeLeft: `${minutes}:0${seconds}` });
+      } else {
+        this.setState({ timeLeft: `${minutes}:${seconds}` });
+      }
     }, 1000);
+  };
+
+  clearTimer = () => {
+    this.setState({ timeLeft: "0:00" });
   };
 
   increaseTimer = () => {
     const { timeLeft } = this.state;
-    let newTime = parseInt(timeLeft) + 5;
-    console.log("INCREASED!");
+    let newTime = parseInt(timeLeft) + 1;
     this.setState({ timeLeft: `${newTime}:00` });
   };
 
   decreaseTimer = () => {
     const { timeLeft } = this.state;
-    let newTime = parseInt(timeLeft) - 5;
-    console.log("DECREASED!");
+    let newTime = parseInt(timeLeft) - 1;
     this.setState({ timeLeft: `${newTime}:00` });
   };
 

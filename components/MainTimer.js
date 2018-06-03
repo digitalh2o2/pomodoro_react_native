@@ -16,7 +16,7 @@ const styles = {
     marginBottom: 20
   },
   textContainer: {
-    fontSize: 48,
+    fontSize: 64,
     textAlign: "center",
     color: "white"
   }
