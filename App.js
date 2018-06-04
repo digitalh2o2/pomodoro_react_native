@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, Text, View, Alert, Vibration } from "react-native";
 import TimeLength from "./components/TimeLength";
 import MainTimer from "./components/MainTimer";
 
@@ -24,15 +24,13 @@ export default class App extends React.Component {
       let timeComplete = countDown - now;
       let minutes = Math.floor((timeComplete % (1000 * 60 * 60)) / (1000 * 60));
       let seconds = Math.floor((timeComplete % (1000 * 60)) / 1000);
-      console.log("minutes", minutes);
-      console.log("seconds", seconds);
       if (timeComplete < 1000) {
-        this.clearTimer();
         clearInterval(this.timerId);
+        this.clearTimer();
+        Vibration.vibrate(3000);
         Alert.alert("Time's Up!", "Time for a break!", [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
+          { text: "OK", onPress: () => this.breakTime() }
         ]);
-        this.breakTime();
       }
       if (seconds < 10) {
         this.setState({ timeLeft: `${minutes}:0${seconds}` });
@@ -53,8 +51,9 @@ export default class App extends React.Component {
       let minutes = Math.floor((timeComplete % (1000 * 60 * 60)) / (1000 * 60));
       let seconds = Math.floor((timeComplete % (1000 * 60)) / 1000);
       if (timeComplete < 1000) {
-        this.clearTimer();
         clearInterval(this.timerId);
+        this.clearTimer();
+        Vibration.vibrate(3000);
         Alert.alert("Break Time Over!", "Start a new session!", [
           { text: "OK", onPress: () => console.log("OK Pressed") }
         ]);
@@ -134,7 +133,7 @@ export default class App extends React.Component {
   stopTimer = () => {
     clearInterval(this.timerId);
     this.setState({
-      timeLeft: "0:00",
+      timeLeft: "1:00",
       timerActive: false,
       breakTimeActive: false
     });
