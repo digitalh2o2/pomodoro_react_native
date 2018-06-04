@@ -13,6 +13,7 @@ class TimeLength extends Component {
             title="-"
             backgroundColor="#d3d3d3"
             onPress={this.props.decreaseTimer}
+            onLongPress={this.props.higherDecrease}
           />
           {!this.props.timerActive ? (
             <Button
@@ -37,6 +38,7 @@ class TimeLength extends Component {
             title="+"
             backgroundColor="#d3d3d3"
             onPress={this.props.increaseTimer}
+            onLongPress={this.props.higherIncrease}
           />
         </View>
       </View>
