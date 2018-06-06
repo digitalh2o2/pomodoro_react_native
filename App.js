@@ -2,17 +2,29 @@ import React from "react";
 import { StyleSheet, Text, View, Alert, Vibration } from "react-native";
 import TimeLength from "./components/TimeLength";
 import MainTimer from "./components/MainTimer";
+import Completed from "./components/Completed";
 
 export default class App extends React.Component {
   state = {
     timeLeft: "10:00",
     breakTimer: "5:00",
     timerActive: false,
-    breakTimeActive: false
+    breakTimeActive: false,
+    sessionsComplete: 0
   };
 
   // to allow clearInterval to work properly
   timerId = null;
+  timeComplete = null;
+  minutes = null;
+  seconds = null;
+
+  getCounter = time => {
+    let now = new Date().getTime();
+    timeComplete = time - now;
+    minutes = Math.floor((timeComplete % (1000 * 60 * 60)) / (1000 * 60));
+    seconds = Math.floor((timeComplete % (1000 * 60)) / 1000);
+  };
 
   startTimer = () => {
     const { timeLeft } = this.state;
@@ -20,12 +32,10 @@ export default class App extends React.Component {
     let timer = parseInt(timeLeft);
     let countDown = new Date().getTime() + timer * 60000 + 1000;
     this.timerId = setInterval(() => {
-      let now = new Date().getTime();
-      let timeComplete = countDown - now;
-      let minutes = Math.floor((timeComplete % (1000 * 60 * 60)) / (1000 * 60));
-      let seconds = Math.floor((timeComplete % (1000 * 60)) / 1000);
+      this.getCounter(countDown);
       if (timeComplete < 1000) {
         clearInterval(this.timerId);
+        this.setState({ sessionsComplete: this.state.sessionsComplete + 1 });
         this.clearTimer();
         Vibration.vibrate(3000);
         Alert.alert("Time's Up!", "Time for a break!", [
@@ -46,10 +56,7 @@ export default class App extends React.Component {
     let timer = parseInt(breakTimer);
     let countDown = new Date().getTime() + timer * 60000 + 1000;
     this.timerId = setInterval(() => {
-      let now = new Date().getTime();
-      let timeComplete = countDown - now;
-      let minutes = Math.floor((timeComplete % (1000 * 60 * 60)) / (1000 * 60));
-      let seconds = Math.floor((timeComplete % (1000 * 60)) / 1000);
+      this.getCounter(countDown);
       if (timeComplete < 1000) {
         clearInterval(this.timerId);
         this.clearTimer();
@@ -74,60 +81,52 @@ export default class App extends React.Component {
     });
   }
 
-  increaseTimer = () => {
-    const { timeLeft } = this.state;
-    let newTime = parseInt(timeLeft) + 1;
-    if (newTime >= 60) {
+  maxAlert = sessionTime => {
+    if (sessionTime >= 60) {
       Alert.alert(
         "Max Timer!",
         "For best results in retaining information, max session is only 60 minutes.",
         [{ text: "OK", onPress: () => console.log("OK Pressed") }]
       );
-      newTime = 60;
+      sessionTime = 60;
     }
-    this.setState({ timeLeft: `${newTime}:00` });
+    this.setState({ timeLeft: `${sessionTime}:00` });
+  };
+
+  increaseTimer = () => {
+    const { timeLeft } = this.state;
+    let newTime = parseInt(timeLeft) + 1;
+    this.maxAlert(newTime);
   };
 
   higherIncrease = () => {
     const { timeLeft } = this.state;
     let newTime = parseInt(timeLeft) + 5;
-    if (newTime >= 60) {
+    this.maxAlert(newTime);
+  };
+
+  lowAlert = sessionTime => {
+    if (sessionTime <= 0) {
       Alert.alert(
-        "Max Timer!",
-        "For best results in retaining information, max session is only 60 minutes.",
+        "Minumum Reached!",
+        "Session can not be lower than 1 minute. Please increase time.",
         [{ text: "OK", onPress: () => console.log("OK Pressed") }]
       );
-      newTime = 60;
+      sessionTime = 1;
     }
-    this.setState({ timeLeft: `${newTime}:00` });
+    this.setState({ timeLeft: `${sessionTime}:00` });
   };
 
   decreaseTimer = () => {
     const { timeLeft } = this.state;
     let newTime = parseInt(timeLeft) - 1;
-    if (newTime <= 0) {
-      Alert.alert(
-        "Minumum Reached!",
-        "Session can not be lower than 0 minutes. Please increase time.",
-        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-      );
-      newTime = 1;
-    }
-    this.setState({ timeLeft: `${newTime}:00` });
+    this.lowAlert(newTime);
   };
 
   higherDecrease = () => {
     const { timeLeft } = this.state;
     let newTime = parseInt(timeLeft) - 5;
-    if (newTime <= 0) {
-      Alert.alert(
-        "Minumum Reached!",
-        "Session can not be lower than 0 minutes. Please increase time.",
-        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-      );
-      newTime = 1;
-    }
-    this.setState({ timeLeft: `${newTime}:00` });
+    this.lowAlert(newTime);
   };
 
   stopTimer = () => {
@@ -140,11 +139,12 @@ export default class App extends React.Component {
   };
 
   render() {
+    const { breakTimeActive, timerActive, sessionsComplete } = this.state;
     return (
       <View style={styles.container}>
         <MainTimer
           timeLeft={this.state.timeLeft}
-          breakTimeActive={this.state.breakTimeActive}
+          breakTimeActive={breakTimeActive}
         />
         <TimeLength
           startTimer={this.startTimer}
@@ -153,8 +153,9 @@ export default class App extends React.Component {
           decreaseTimer={this.decreaseTimer}
           higherDecrease={this.higherDecrease}
           stopTimer={this.stopTimer}
-          timerActive={this.state.timerActive}
+          timerActive={timerActive}
         />
+        <Completed sessionsComplete={sessionsComplete} />
       </View>
     );
   }
