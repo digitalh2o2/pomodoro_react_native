@@ -7,7 +7,6 @@ import Completed from "./components/Completed";
 export default class App extends React.Component {
   state = {
     timeLeft: "10:00",
-    breakTimer: "5:00",
     timerActive: false,
     breakTimeActive: false,
     sessionsComplete: 0
@@ -27,7 +26,7 @@ export default class App extends React.Component {
   };
 
   startTimer = () => {
-    const { timeLeft } = this.state;
+    const { timeLeft, sessionsComplete } = this.state;
     this.setState({ timerActive: true, breakTimeActive: false });
     let timer = parseInt(timeLeft);
     let countDown = new Date().getTime() + timer * 60000 + 1000;
@@ -35,7 +34,7 @@ export default class App extends React.Component {
       this.getCounter(countDown);
       if (timeComplete < 1000) {
         clearInterval(this.timerId);
-        this.setState({ sessionsComplete: this.state.sessionsComplete + 1 });
+        this.setState({ sessionsComplete: sessionsComplete + 1 });
         this.clearTimer();
         Vibration.vibrate(3000);
         Alert.alert("Time's Up!", "Time for a break!", [
@@ -51,9 +50,9 @@ export default class App extends React.Component {
   };
 
   breakTime = () => {
-    const { breakTimer } = this.state;
+    const { sessionsComplete } = this.state;
     this.setState({ timerActive: true, breakTimeActive: true });
-    let timer = parseInt(breakTimer);
+    let timer = sessionsComplete % 4 === 0 ? 25 : 5;
     let countDown = new Date().getTime() + timer * 60000 + 1000;
     this.timerId = setInterval(() => {
       this.getCounter(countDown);
