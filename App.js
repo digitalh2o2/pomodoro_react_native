@@ -9,7 +9,8 @@ export default class App extends React.Component {
     timeLeft: "10:00",
     timerActive: false,
     breakTimeActive: false,
-    sessionsComplete: 0
+    sessionsComplete: 0,
+    disableButtons: false
   };
 
   // to allow clearInterval to work properly
@@ -27,7 +28,11 @@ export default class App extends React.Component {
 
   startTimer = () => {
     const { timeLeft, sessionsComplete } = this.state;
-    this.setState({ timerActive: true, breakTimeActive: false });
+    this.setState({
+      timerActive: true,
+      breakTimeActive: false,
+      disableButtons: true
+    });
     let timer = parseInt(timeLeft);
     let countDown = new Date().getTime() + timer * 60000 + 1000;
     this.timerId = setInterval(() => {
@@ -76,7 +81,8 @@ export default class App extends React.Component {
     this.setState({
       timeLeft: "0:00",
       timerActive: false,
-      breakTimeActive: false
+      breakTimeActive: false,
+      disableButtons: false
     });
   }
 
@@ -129,16 +135,26 @@ export default class App extends React.Component {
   };
 
   stopTimer = () => {
+    const { timerActive, breakTimeActive, sessionsComplete } = this.state;
+    if (timerActive === true && breakTimeActive === false) {
+      this.setState({ sessionsComplete: sessionsComplete - 1 });
+    }
     clearInterval(this.timerId);
     this.setState({
       timeLeft: "1:00",
       timerActive: false,
-      breakTimeActive: false
+      breakTimeActive: false,
+      disableButtons: false
     });
   };
 
   render() {
-    const { breakTimeActive, timerActive, sessionsComplete } = this.state;
+    const {
+      breakTimeActive,
+      timerActive,
+      sessionsComplete,
+      disableButtons
+    } = this.state;
     return (
       <View style={styles.container}>
         <MainTimer
@@ -153,6 +169,7 @@ export default class App extends React.Component {
           higherDecrease={this.higherDecrease}
           stopTimer={this.stopTimer}
           timerActive={timerActive}
+          disableButtons={disableButtons}
         />
         <Completed sessionsComplete={sessionsComplete} />
       </View>

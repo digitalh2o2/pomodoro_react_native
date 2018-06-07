@@ -9,6 +9,8 @@ class TimeLength extends Component {
         <View style={styles.buttonContainer}>
           <Button
             raised
+            disabled={this.props.disableButtons}
+            fontSize={24}
             large
             title="-"
             backgroundColor="#d3d3d3"
@@ -18,6 +20,7 @@ class TimeLength extends Component {
           {!this.props.timerActive ? (
             <Button
               raised
+              fontSize={24}
               large
               title="Start Timer"
               backgroundColor="#E684AE"
@@ -26,6 +29,7 @@ class TimeLength extends Component {
           ) : (
             <Button
               raised
+              fontSize={24}
               large
               title="Stop Timer"
               backgroundColor="#E684AE"
@@ -34,6 +38,8 @@ class TimeLength extends Component {
           )}
           <Button
             raised
+            disabled={this.props.disableButtons}
+            fontSize={24}
             large
             title="+"
             backgroundColor="#d3d3d3"
