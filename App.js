@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View, Alert, Vibration } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Vibration,
+  Animated
+} from "react-native";
 import TimeLength from "./components/TimeLength";
 import MainTimer from "./components/MainTimer";
 import Completed from "./components/Completed";
@@ -18,6 +25,7 @@ export default class App extends React.Component {
   timeComplete = null;
   minutes = null;
   seconds = null;
+  fadeBackGround = new Animated.Value(0);
 
   getCounter = time => {
     let now = new Date().getTime();
@@ -78,6 +86,7 @@ export default class App extends React.Component {
   };
 
   clearTimer() {
+    this.fadeBackGround.setValue(0);
     this.setState({
       timeLeft: "0:00",
       timerActive: false,
@@ -136,8 +145,9 @@ export default class App extends React.Component {
 
   stopTimer = () => {
     const { timerActive, breakTimeActive, sessionsComplete } = this.state;
+    this.fadeBackGround.setValue(0);
     if (timerActive === true && breakTimeActive === false) {
-      this.setState({ sessionsComplete: sessionsComplete - 1 });
+      this.setState({ sessionsComplete: 0 });
     }
     clearInterval(this.timerId);
     this.setState({
@@ -148,6 +158,14 @@ export default class App extends React.Component {
     });
   };
 
+  fadeBack = () => {
+    Animated.timing(this.fadeBackGround, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: false
+    }).start();
+  };
+
   render() {
     const {
       breakTimeActive,
@@ -155,11 +173,26 @@ export default class App extends React.Component {
       sessionsComplete,
       disableButtons
     } = this.state;
+    let backGroundColorAnimated = this.fadeBackGround.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["#D0F0C0", "#bfe9ff"]
+    });
     return (
-      <View style={styles.container}>
+      <Animated.View
+        style={
+          breakTimeActive
+            ? [
+                styles.breakContainer,
+                this.fadeBack(),
+                { backgroundColor: backGroundColorAnimated }
+              ]
+            : styles.container
+        }
+      >
         <MainTimer
           timeLeft={this.state.timeLeft}
           breakTimeActive={breakTimeActive}
+          timerActive={timerActive}
         />
         <TimeLength
           startTimer={this.startTimer}
@@ -173,7 +206,7 @@ export default class App extends React.Component {
           disableButtons={disableButtons}
         />
         <Completed sessionsComplete={sessionsComplete} />
-      </View>
+      </Animated.View>
     );
   }
 }
@@ -181,7 +214,12 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#bfe9ff",
+    backgroundColor: "#D0F0C0",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  breakContainer: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center"
   }

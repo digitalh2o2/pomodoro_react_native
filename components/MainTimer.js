@@ -27,9 +27,13 @@ class MainTimer extends Component {
           <Animated.View style={[this.spring(), animatedStyle]}>
             <Text style={styles.textContainer}>Break Time!</Text>
           </Animated.View>
+        ) : this.props.timerActive ? (
+          <View>
+            <Text style={styles.textContainer}>Focus!</Text>
+          </View>
         ) : (
           <View>
-            <Text style={styles.titleTextContainer}>Pomodoro Clock</Text>
+            <Text style={styles.titleTextContainer}>Start a Session</Text>
           </View>
         )}
         <Text style={styles.textContainer}>{this.props.timeLeft}</Text>
