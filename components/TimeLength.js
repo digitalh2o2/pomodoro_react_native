@@ -26,6 +26,15 @@ class TimeLength extends Component {
               backgroundColor="#E684AE"
               onPress={this.props.startTimer}
             />
+          ) : this.props.breakTimeActive ? (
+            <Button
+              raised
+              fontSize={24}
+              large
+              title="Skip Break"
+              backgroundColor="#E684AE"
+              onPress={this.props.stopTimer}
+            />
           ) : (
             <Button
               raised

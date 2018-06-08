@@ -6,7 +6,7 @@ class Completed extends Component {
     return (
       <View style={styles.sessionContainer}>
         <Text style={styles.textContainer}>
-          Sessions In A Row Complete: {this.props.sessionsComplete}{" "}
+          Sessions in a Row Complete: {this.props.sessionsComplete}{" "}
         </Text>
       </View>
     );

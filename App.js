@@ -169,6 +169,7 @@ export default class App extends React.Component {
           higherDecrease={this.higherDecrease}
           stopTimer={this.stopTimer}
           timerActive={timerActive}
+          breakTimeActive={breakTimeActive}
           disableButtons={disableButtons}
         />
         <Completed sessionsComplete={sessionsComplete} />
