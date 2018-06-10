@@ -74,7 +74,7 @@ export default class App extends React.Component {
         this.clearTimer();
         Vibration.vibrate(3000);
         Alert.alert("Break Time Over!", "Start a new session!", [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
+          { text: "OK", onPress: () => this.stopTimer() }
         ]);
       }
       if (seconds < 10) {
@@ -107,15 +107,14 @@ export default class App extends React.Component {
     this.setState({ timeLeft: `${sessionTime}:00` });
   };
 
-  increaseTimer = () => {
+  increaseTimer = amount => {
     const { timeLeft } = this.state;
-    let newTime = parseInt(timeLeft) + 1;
-    this.maxAlert(newTime);
-  };
-
-  higherIncrease = () => {
-    const { timeLeft } = this.state;
-    let newTime = parseInt(timeLeft) + 5;
+    let newTime;
+    if (amount === "increase") {
+      newTime = parseInt(timeLeft) + 1;
+    } else if (amount === "increase more") {
+      newTime = parseInt(timeLeft) + 5;
+    }
     this.maxAlert(newTime);
   };
 
@@ -131,15 +130,14 @@ export default class App extends React.Component {
     this.setState({ timeLeft: `${sessionTime}:00` });
   };
 
-  decreaseTimer = () => {
+  decreaseTimer = amount => {
     const { timeLeft } = this.state;
-    let newTime = parseInt(timeLeft) - 1;
-    this.lowAlert(newTime);
-  };
-
-  higherDecrease = () => {
-    const { timeLeft } = this.state;
-    let newTime = parseInt(timeLeft) - 5;
+    let newTime;
+    if (amount === "low") {
+      newTime = parseInt(timeLeft) - 1;
+    } else if (amount === "lower") {
+      newTime = parseInt(timeLeft) - 5;
+    }
     this.lowAlert(newTime);
   };
 
